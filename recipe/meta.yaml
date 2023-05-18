@@ -1,5 +1,7 @@
 {% set name = "openmm_deepmd_plugin" %}
-{% set version = "2.0.1" %}
+{% set version = "d818265" %}
+{% set cuda_compiler_version = "11.8" %}
+{% set dp_variant = "gpu" %}
 
 package:
   name: {{ name|lower }}
@@ -7,12 +9,13 @@ package:
 
 source:
   git_url: https://github.com/JingHuangLab/openmm_deepmd_plugin.git
-  git_rev: 857eec25c892f3d9fa9ddd1479d1a484a67cc1d9
+  git_rev: d8182656dd948fb1df23f886a634b892f0dcd134
   patches:
     - cuda_platform.patch
 
 build:
-  number: 0
+  number: 1
+  string: "{{ PKG_BUILDNUM }}_cuda{{ cuda_compiler_version }}_dp.ba1d7c2" 
   skip: True  # [not linux]
   missing_dso_whitelist:
     - "*/libcuda.*"    # [linux64 or ppc64le]
@@ -28,9 +31,8 @@ requirements:
 
   host:
     - python  # [not ppc64le]
-    - libdeepmd {{ version }} *_{{ dp_variant }}
-    - cudatoolkit >=10  # [dp_variant != 'cpu']
-    - openmm 7.6
+    - cudatoolkit {{ cuda_compiler_version }}*
+    - openmm 7.7
     - fftw
     - numpy
     - cython
@@ -38,10 +40,8 @@ requirements:
 
   run:
     - python 
-    - libdeepmd >={{ version }} *_{{ dp_variant }}
-    - cudatoolkit >=10  # [dp_variant != 'cpu']
     - fftw
-    - openmm 7.6
+    - openmm 7.7
     - numpy
 
 test:
@@ -49,11 +49,12 @@ test:
     - python -m openmm.testInstallation
     - test -f $PREFIX/lib/libOpenMM.so
     - test -f $PREFIX/lib/libOpenMMDeepmd.so
-    - python -m OpenMMDeepmdPluginTools.test_dp_plugin_nve
+    - python -m OpenMMDeepmdPlugin.tests.test_dp_plugin_nve
+    - python -m OpenMMDeepmdPlugin.tests.test_dp_plugin_nve --platform CUDA
 
 about:
-  home: https://github.com/JingHuangLab/openmm_deepmd_plugin.git
-  summary: 'OpenMM Plugin for Deepmd-kit.'
+  home: https://github.com/JingHuangLab/openmm_deepmd_plugin
+  summary: 'OpenMM Plugin for DeePMD-kit.'
   license: LGPL-3.0-or-later
   license_family: LGPL
   description: |

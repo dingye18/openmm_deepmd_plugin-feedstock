@@ -1,17 +1,15 @@
 name: openmm-deepmd-plugin 
-version: 2.0.0 
+version: d818265
 
 
 channels:
   - defaults
   - deepmodeling
-  - deepmodeling/label/dev
   - conda-forge
 
 specs:
   - fftw
-  - openmm 7.6
-  - libdeepmd
+  - openmm 7.7
   - numpy
   - cython
   - swig

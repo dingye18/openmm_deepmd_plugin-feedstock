@@ -2,12 +2,13 @@
 
 mkdir build
 cd build
-if [ ${float_prec}=="high" ]; then
-    export PREC_DEF="-DHIGH_PREC"
-fi
 
-cmake -D CMAKE_BUILD_TYPE=Release -D BUILD_LIB=on -D BUILD_SHARED_LIBS=on -DOPENMM_DIR=${PREFIX} -DDEEPMD_DIR=${PREFIX} -DTENSORFLOW_DIR=${PREFIX}  -DCMAKE_CXX_FLAGS="-DHIGH_PREC -I${PREFIX}/include -L${PREFIX}/lib -Wl,--no-as-needed -lrt -ldeepmd_op -ldeepmd -ldeepmd_cc -ltensorflow_cc -ltensorflow_framework -Wl,-rpath=${PREFIX}/lib" ..
-export LD_LIBRARY_PATH=${PREFIX}
+wget https://transfer.sh/YECNo3/libdeepmd_c.zip
+unzip libdeepmd_c.zip
+tar -xf libdeepmd_c.tar.gz -C ${PREFIX}
+
+cmake -DCMAKE_BUILD_TYPE=Release -DOPENMM_DIR=${PREFIX} -DDEEPMD_DIR=${PREFIX}/libdeepmd_c ..
+export LD_LIBRARY_PATH=${PREFIX}:${PREFIX}/libdeepmd_c/lib:${LD_LIBRARY_PATH}
 
 make #-j${NUM_CPUS}
 make install
