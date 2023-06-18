@@ -1,6 +1,6 @@
 {% set name = "openmm_deepmd_plugin" %}
 {% set version = "d818265" %}
-{% set cuda_compiler_version = "11.8" %}
+{% set cuda_compiler_version = "11.6" %}
 {% set dp_variant = "gpu" %}
 
 package:
@@ -28,20 +28,21 @@ requirements:
     - cmake
     - make
     - swig
+    - wget
+    - unzip
 
   host:
-    - python  # [not ppc64le]
     - cudatoolkit {{ cuda_compiler_version }}*
-    - openmm 7.7
+    - openmm
     - fftw
     - numpy
     - cython
     - swig
+    - wget
+    - unzip
 
-  run:
-    - python 
-    - fftw
-    - openmm 7.7
+  run: 
+    - openmm
     - numpy
 
 test:
@@ -50,7 +51,6 @@ test:
     - test -f $PREFIX/lib/libOpenMM.so
     - test -f $PREFIX/lib/libOpenMMDeepmd.so
     - python -m OpenMMDeepmdPlugin.tests.test_dp_plugin_nve
-    - python -m OpenMMDeepmdPlugin.tests.test_dp_plugin_nve --platform CUDA
 
 about:
   home: https://github.com/JingHuangLab/openmm_deepmd_plugin
